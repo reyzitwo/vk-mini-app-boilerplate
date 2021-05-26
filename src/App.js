@@ -54,7 +54,7 @@ class App extends React.Component {
 
         dispatch(VK.initApp());
 
-        if (document.documentElement.clientWidth >= 1000) {
+        if (window.innerWidth >= 1000) {
           this.setState({ isDesktop: true })
         }
 
