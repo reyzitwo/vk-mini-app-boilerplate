@@ -20,6 +20,6 @@
 
 Это обновленная версия [шаблона](https://github.com/iSa1vatore/vk-mini-app-boilerplate) до актуальной версии [VKUI](https://github.com/VKCOM/VKUI).
 
-Демо: [vk.com/app6984089](https://vk.com/app7855533)
+Демо: [vk.com/app7855533](https://vk.com/app7855533)
 
 Мой VK (вопросы, предложения): [Александр Кузнецов](https://vk.me/reyzitwo)
