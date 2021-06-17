@@ -14,8 +14,24 @@ import {setStory} from "./js/store/router/actions";
 
 import '@vkontakte/vkui/dist/vkui.css';
 import './css/main.css';
+import bridge from '@vkontakte/vk-bridge';
 
 import App from './App';
+
+bridge.subscribe((e) => {
+    switch (e.detail.type) {
+        case 'VKWebAppUpdateConfig':
+            let schemeAttribute = document.createAttribute('scheme');
+            schemeAttribute.value = e.detail.data.scheme ? e.detail.data.scheme : 'client_light';
+            document.body.attributes.setNamedItem(schemeAttribute);
+            break;
+
+        default:
+            break;
+    }
+})
+
+bridge.send('VKWebAppInit', {})
 
 export const store = createStore(rootReducer, composeWithDevTools(
     applyMiddleware(thunk),

@@ -86,7 +86,7 @@ class App extends React.Component {
     }
 
     render() {
-        const {goBack, setStory, closeModal, popouts, activeView, activeStory, activeModals, panelsHistory, colorScheme} = this.props;
+        const {goBack, setStory, closeModal, popouts, activeView, activeStory, activeModals, panelsHistory} = this.props;
 
         const hasHeader = platform !== VKCOM;
         const { isDesktop } = this.state
@@ -110,7 +110,7 @@ class App extends React.Component {
 
         return (     
             
-            <ConfigProvider isWebView={true} scheme={colorScheme}>
+            <ConfigProvider isWebView={true}>
                 <AdaptivityProvider>
                     <AppRoot>
                       <SplitLayout
@@ -210,8 +210,6 @@ const mapStateToProps = (state) => {
       activeModals: state.router.activeModals,
       popouts: state.router.popouts,
       scrollPosition: state.router.scrollPosition,
-
-      colorScheme: state.vkui.colorScheme
     };
 };
 
