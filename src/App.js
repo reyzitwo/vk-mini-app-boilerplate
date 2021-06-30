@@ -54,8 +54,8 @@ class App extends React.Component {
 
         dispatch(VK.initApp());
 
-        if (window.innerWidth >= 1000) {
-          this.setState({ isDesktop: true })
+        if (parsedUrl.searchParams.get('vk_platform') === 'desktop_web') {
+            this.setState({ isDesktop: true })
         }
 
         window.onpopstate = () => {
