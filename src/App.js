@@ -53,7 +53,8 @@ class App extends React.Component {
         const {goBack, dispatch} = this.props;
 
         dispatch(VK.initApp());
-
+      
+        let parsedUrl = new URL(window.location.href)
         if (parsedUrl.searchParams.get('vk_platform') === 'desktop_web') {
             this.setState({ isDesktop: true })
         }
