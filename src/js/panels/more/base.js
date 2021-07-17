@@ -11,8 +11,16 @@ import {
     Title,
     Text,
     Button,
-    ScreenSpinner
+    ScreenSpinner,
+    Group,
+    Header,
+    SimpleCell,
+    CellButton
 } from "@vkontakte/vkui";
+import {
+    Icon28SchoolOutline,
+    Icon28AddOutline
+} from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
 
 var infouser = 0
@@ -66,26 +74,20 @@ class HomePanelProfile extends React.Component {
         return (
             <Panel id={id}>
                 <PanelHeader noShadow={true}>Examples 2</PanelHeader>
-                <Gradient style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        textAlign: 'center',
-                        padding: 32,
-                    }}>
+                <Group>
+                    <Gradient className='ProfileUser'>
                         <Avatar size={96} src={photo} />
 
                         <Title 
-                            style={{ marginBottom: 8, marginTop: 20 }} 
+                            className='NameUser'
                             level="2" 
                             weight="medium"
-                        >{first_name} {last_name}
+                        >
+                            {first_name} {last_name}
                         </Title>
 
-                        <Text 
-                            style={{ marginBottom: 24, color: 'var(--text_secondary)' }}
-                        >Крутой человек!
+                        <Text className='SubheaderUser'>
+                            Крутой человек!
                         </Text>
 
                         <Button 
@@ -96,6 +98,12 @@ class HomePanelProfile extends React.Component {
                             Перейти на страницу
                         </Button>
                     </Gradient>
+                    <Group mode="plain">
+                        <Header>Учебные заведения и классы</Header>
+                        <SimpleCell before={<Icon28SchoolOutline />} description="Екатеринбург">Школа №180</SimpleCell>
+                        <CellButton before={<Icon28AddOutline />}>Добавить учебное заведение</CellButton>
+                    </Group>
+                </Group>
             </Panel>
         );
     }

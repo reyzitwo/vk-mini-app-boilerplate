@@ -7,7 +7,8 @@ import {
     Panel, 
     PanelHeader, 
     PanelHeaderBack, 
-    Placeholder
+    Placeholder,
+    Group
 } from "@vkontakte/vkui";
 import { Icon56DiamondOutline } from '@vkontakte/icons';
 
@@ -23,20 +24,20 @@ class HomePanelPlaceholder extends React.Component {
                 >
                     Examples 1.2
                 </PanelHeader>
-                <Placeholder stretched
-                    icon={<Icon56DiamondOutline/>}
-                    header='Заглушка'
-                >
-                    Простой Placeholder. Здесь ничего нет
-                </Placeholder>
+                <Group>
+                    <Placeholder
+                        icon={<Icon56DiamondOutline/>}
+                        header='Заглушка'
+                    >
+                        Простой Placeholder. Здесь ничего нет
+                    </Placeholder>
+                </Group>
             </Panel>
         );
     }
 
 }
 
-const mapDispatchToProps = {
-    goBack
-};
+const mapDispatchToProps = { goBack };
 
 export default connect(null, mapDispatchToProps)(HomePanelPlaceholder);

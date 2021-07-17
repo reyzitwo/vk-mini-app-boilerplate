@@ -3,21 +3,22 @@
     margin: 0 auto;
 }
 
-.div-center img {
-    width: 10rem;
-}
-
-.buttons-group {
+.ProfileUser {
     display: flex;
+    margin: -7px -7px 0 -7px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
 }
 
-.buttons-group button:first-child {
-    margin-right: 8px;
+.NameUser {
+    margin-bottom: 8px; 
+    margin-top: 20px
 }
 
-a, div, img, p, button {
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
+.SubheaderUser {
+    margin-bottom: 24px;
+    color: var(--text_secondary)
 }

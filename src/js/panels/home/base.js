@@ -50,7 +50,7 @@ class HomePanelBase extends React.Component {
 
     async openSpinner() {
         this.props.openPopout(<ScreenSpinner/>)
-        await this.sleep(3000)
+        await this.sleep(2500)
         this.props.closePopout()
     }
 
