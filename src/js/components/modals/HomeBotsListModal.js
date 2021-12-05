@@ -1,7 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
-
-import {openModal} from "../../store/router/actions";
 
 import {
     List, 
@@ -28,53 +25,50 @@ const bots = [
     },
     {
         name: 'VK Testers',
-        avatar: 'https://sun1.is74.userapi.com/impf/c626821/v626821590/2ae79/TI4fleAH-cs.jpg?size=1280x724&quality=96&sign=851a3817064034d2fa974ce029b71a5a&type=album',
+        avatar: 'https://sun1.is74.userapi.com/impg/A1ovThuM8zEqmrM9JSCmQreQMma77TzS4GKnQg/KXYKrjN-gvs.jpg?size=1280x1280&quality=95&sign=65c063e8da218030ea2643df3414ece4&type=album',
         desc: 'Какой-то текст'
     },
 ];
 
-class HomeBotsListModal extends React.Component {
+function BotsListModal({id, platform, router}) {
+    return (
+        <ModalPage
+            id={id}
+            header={
+                <ModalPageHeader
+                    left={platform !== IOS && 
+                        <PanelHeaderButton onClick={() => router.toBack()}>
+                            <Icon24Cancel/>
+                        </PanelHeaderButton>
+                    }
 
-    render() {
-        const {id, onClose, openModal, platform} = this.props;
-
-        return (
-            <ModalPage
-                id={id}
-                header={
-                    <ModalPageHeader
-                        left={platform !== IOS &&
-                        <PanelHeaderButton onClick={onClose}><Icon24Cancel/></PanelHeaderButton>}
-                        right={platform === IOS &&
-                        <PanelHeaderButton onClick={onClose}><Icon24Dismiss/></PanelHeaderButton>}
+                    right={platform === IOS && 
+                        <PanelHeaderButton onClick={() => router.toBack()}>
+                            <Icon24Dismiss/>
+                        </PanelHeaderButton>
+                    }
+                >
+                    Сообщества
+                </ModalPageHeader>
+            }
+            onClose={() => router.toBack()}
+            settlingHeight={100}
+        >
+            <List>
+                {bots.map((bot, index) => (
+                    <Cell
+                        key={index}
+                        description={bot.desc}
+                        before={<Avatar size={40} src={bot.avatar}/>}
+                        onClick={() => router.toModal('botInfo')}
+                        asideContent={<Icon24Chevron fill="#528bcc"/>}
                     >
-                        VK
-                    </ModalPageHeader>
-                }
-                onClose={onClose}
-                settlingHeight={80}
-            >
-                <List>
-                    {bots.map((bot, index) => (
-                        <Cell
-                            key={index}
-                            description={bot.desc}
-                            before={<Avatar size={40} src={bot.avatar}/>}
-                            onClick={() => openModal('MODAL_PAGE_BOT_INFO')}
-                            asideContent={<Icon24Chevron fill="#528bcc"/>}
-                        >
-                            {bot.name}
-                        </Cell>
-                    ))}
-                </List>
-            </ModalPage>
-        );
-    }
-
+                        {bot.name}
+                    </Cell>
+                ))}
+            </List>
+        </ModalPage>
+    );
 }
 
-const mapDispatchToProps = {
-    openModal
-};
-
-export default withPlatform(connect(null, mapDispatchToProps)(HomeBotsListModal));
+export default withPlatform(BotsListModal);

@@ -4,19 +4,13 @@ import 'core-js/es6/set';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {applyMiddleware, createStore} from "redux";
-import thunk from 'redux-thunk';
-import {Provider} from 'react-redux';
-import rootReducer from './js/store/reducers';
-import {composeWithDevTools} from 'redux-devtools-extension';
-
-import {setStory} from "./js/store/router/actions";
+import Router from 'react-router-vkminiapps';
+import structure from './structure';
+import App from './App';
 
 import '@vkontakte/vkui/dist/vkui.css';
 import './css/main.css';
 import bridge from '@vkontakte/vk-bridge';
-
-import App from './App';
 
 bridge.subscribe((e) => {
     switch (e.detail.type) {
@@ -33,16 +27,10 @@ bridge.subscribe((e) => {
 
 bridge.send('VKWebAppInit', {})
 
-export const store = createStore(rootReducer, composeWithDevTools(
-    applyMiddleware(thunk),
-));
-
-store.dispatch(setStory('home', 'base'));
-
 ReactDOM.render(
-    <Provider store={store}>
+    <Router structure={structure}>
         <App/>
-    </Provider>,
+    </Router>,
     document.getElementById('root')
 );
 

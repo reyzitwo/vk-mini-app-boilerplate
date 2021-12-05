@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
 
 import {
     Cell, 
@@ -14,54 +13,58 @@ import {
 } from "@vkontakte/vkui";
 import { Icon24Dismiss, Icon24Cancel } from '@vkontakte/icons'
 
-class HomeBotsListModal extends React.Component {
+function BotsListModal({id, platform, router}) {
+    return (
+        <ModalPage
+            id={id}
+            header={
+                <ModalPageHeader
+                    left={platform !== IOS && 
+                        <PanelHeaderButton onClick={() => router.toBack()}>
+                            <Icon24Cancel/>
+                        </PanelHeaderButton>
+                    }
 
-    render() {
-        const {id, onClose, platform} = this.props;
-
-        return (
-            <ModalPage
-                id={id}
-                header={
-                    <ModalPageHeader
-                        left={platform !== IOS &&
-                        <PanelHeaderButton onClick={onClose}><Icon24Cancel/></PanelHeaderButton>}
-                        right={platform === IOS &&
-                        <PanelHeaderButton onClick={onClose}><Icon24Dismiss/></PanelHeaderButton>}
-                    >
-                        Информация о сообществе
-                    </ModalPageHeader>
-                }
-                onClose={onClose}
-                settlingHeight={80}
-            >
-                <Cell
-                    description="Описание"
-                    before={<Avatar size={40} src="https://vk.com/images/community_100.png?ava=1"/>}
+                    right={platform === IOS && 
+                        <PanelHeaderButton onClick={() => router.toBack()}>
+                            <Icon24Dismiss/>
+                        </PanelHeaderButton>
+                    }
                 >
-                    Название
-                </Cell>
-                <List>
-                    <Cell>
-                        <InfoRow header="Подписчиков">
-                            8800
-                        </InfoRow>
-                    </Cell>
-                    <Cell>
-                        <InfoRow header="Записей">
-                            555
-                        </InfoRow>
-                    </Cell>
-                    <Cell>
-                        <InfoRow header="Рейтинг">
-                            3535
-                        </InfoRow>
-                    </Cell>
-                </List>
-            </ModalPage>
-        );
-    }
+                    Информация о сообществе
+                </ModalPageHeader>
+            }
+            onClose={() => router.toBack()}
+            settlingHeight={100}
+        >
+            <Cell
+                description="Описание"
+                before={<Avatar size={40} src="https://vk.com/images/community_100.png?ava=1"/>}
+            >
+                Название
+            </Cell>
 
+            <List>
+                <Cell>
+                    <InfoRow header="Подписчиков">
+                            8800
+                    </InfoRow>
+                </Cell>
+
+                <Cell>
+                    <InfoRow header="Записей">
+                        555
+                    </InfoRow>
+                </Cell>
+
+                <Cell>
+                    <InfoRow header="Рейтинг">
+                        3535
+                    </InfoRow>
+                </Cell>
+            </List>
+        </ModalPage>
+    );
 }
 
-export default withPlatform(connect()(HomeBotsListModal));
+export default withPlatform(BotsListModal);

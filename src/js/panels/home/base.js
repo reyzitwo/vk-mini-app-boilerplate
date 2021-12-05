@@ -1,7 +1,4 @@
-import React from 'react';
-import {connect} from 'react-redux';
-
-import {closePopout, goBack, openModal, openPopout, setPage} from '../../store/router/actions';
+import React, { useState } from 'react';
 
 import {
     Div, 
@@ -15,21 +12,14 @@ import {
     Avatar
 } from '@vkontakte/vkui'
 import { Icon16Done } from '@vkontakte/icons'
-import Chel from '../../../svg/chel.svg'
+import img from '../../../svg/chel.svg'
 
+function HomePanelBase({id, router}) {
+    const [showImg, setShowImg] = useState(false)
+    const [snackbar, setSnackbar] = useState(null)
 
-class HomePanelBase extends React.Component {
-
-    state = {
-        showImg: false
-    };
-
-    showImg = () => {
-        this.setState({showImg: true});
-    };
-
-    openPopout() {
-        this.props.openPopout(
+    function openAlert() {
+        router.toPopout(
             <Alert
                 actions={[{
                     title: 'Нет',
@@ -39,80 +29,106 @@ class HomePanelBase extends React.Component {
                     title: 'Да',
                     autoclose: true,
                     mode: 'destructive',
-                    action: this.showImg
+                    action: () => setShowImg(true)
                 }]}
-                onClose={() => this.props.closePopout()}
+                onClose={() => router.toPopout()}
                 header='Вопрос значит'
                 text='Вас роняли в детстве?'
             />
-        );
+        )
     }
 
-    async openSpinner() {
-        this.props.openPopout(<ScreenSpinner/>)
-        await this.sleep(2500)
-        this.props.closePopout()
+    async function openSpinner() {
+        router.toPopout(<ScreenSpinner/>)
+        await new Promise(resolve => setTimeout(resolve, 2000))
+        router.toPopout()
     }
 
-    openSnackbar() {
-        this.props.openPopout(
+    function openSnackbar() {
+        setSnackbar(
             <Snackbar
                 layout='vertical'
-                onClose={() => this.props.closePopout()}
+                onClose={() => setSnackbar(null)}
                 action='Например кнопка'
-                before={<Avatar size={24} style={{ background: 'var(--accent)' }}> <Icon16Done fill='#fff' width={14} height={14}/> </Avatar>}
+                before={
+                    <Avatar size={24} style={{ background: 'var(--accent)' }}> 
+                        <Icon16Done fill='#fff'/> 
+                    </Avatar>
+                }
             >
                 Какой-то текст
             </Snackbar>
-        );
+        )
     }
 
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms))
-    }
+    return (
+        <Panel id={id}>
+            <PanelHeader separator={false}>Главная</PanelHeader>
+            <Group>
+                <Div>
+                    <Button 
+                        size="l" 
+                        stretched
+                        mode="secondary" 
+                        onClick={() => router.toPanel('placeholder')}
+                    >
+                        Открыть Panel
+                    </Button>
+                </Div>
 
-    render() {
-        const {id, setPage, withoutEpic} = this.props;
+                <Div>
+                    <Button 
+                        size="l" 
+                        stretched
+                        mode="secondary" 
+                        onClick={() => openAlert()}
+                    >
+                        Открыть Alert
+                    </Button>
+                </Div>
 
-        return (
-            <Panel id={id}>
-                <PanelHeader>Examples</PanelHeader>
-                <Group>
-                    <Div>
-                        <Button mode="secondary" size="l" stretched={true} onClick={() => setPage('home', 'placeholder')}>Открыть Placeholder</Button>
-                    </Div>
-                    <Div>
-                        <Button mode="secondary" size="l" stretched={true} onClick={() => this.openPopout()}>Открыть алерт</Button>
-                    </Div>
-                    <Div>
-                        <Button mode="secondary" size="l" stretched={true} onClick={() => this.openSpinner()}>Открыть спиннер</Button>
-                    </Div>
-                    <Div>
-                        <Button mode="secondary" size="l" stretched={true} onClick={() => this.openSnackbar()}>Открыть снекбар</Button>
-                    </Div>
-                    <Div>
-                        <Button mode="secondary" size="l" stretched={true} onClick={() => this.props.openModal("MODAL_PAGE_BOTS_LIST")}>Открыть
-                            модальную страницу</Button>
-                    </Div>
-                    {withoutEpic && <Div>
-                        <Button mode="secondary" size="l" stretched={true} onClick={() => setPage('modal', 'filters')}>Открыть модальное окно</Button>
-                    </Div>}
-                    {this.state.showImg && <Div className='div-center'>
-                        <img src={Chel} alt="чел"/>
-                    </Div>}
-                </Group>
-            </Panel>
-        );
-    }
+                <Div>
+                    <Button 
+                        size="l" 
+                        stretched
+                        mode="secondary" 
+                        onClick={() => openSpinner()}
+                    >
+                        Открыть ScreenSpinner
+                    </Button>
+                </Div>
 
+                <Div>
+                    <Button
+                        size="l" 
+                        stretched
+                        mode="secondary" 
+                        onClick={() => openSnackbar()}
+                    >
+                        Открыть Snackbar
+                    </Button>
+                </Div>
+
+                <Div>
+                    <Button 
+                        size="l" 
+                        stretched
+                        mode="secondary" 
+                        onClick={() => router.toModal('botsList')}
+                    >
+                        Открыть ModalPage
+                    </Button>
+                </Div>
+
+                {showImg && 
+                    <Div className='div-center'>
+                        <img src={img} alt="чел"/>
+                    </Div>
+                }
+            </Group>
+            {snackbar}
+        </Panel>
+    );
 }
 
-const mapDispatchToProps = {
-    setPage,
-    goBack,
-    openPopout,
-    closePopout,
-    openModal
-};
-
-export default connect(null, mapDispatchToProps)(HomePanelBase);
+export default HomePanelBase;

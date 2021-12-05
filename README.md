@@ -7,8 +7,6 @@
 
 [Документация по ReactJS](https://ru.reactjs.org/docs/getting-started.html)
 
-[Документация по React Redux](https://rajdee.gitbooks.io/redux-in-russian/content/)
-
 ## Установка:
 `git clone git://github.com/reyzitwo/vk-mini-app-boilerplate.git <name>`
 
@@ -18,8 +16,8 @@
 
 ##
 
-Это обновленная версия [шаблона](https://github.com/iSa1vatore/vk-mini-app-boilerplate) до актуальной версии [VKUI](https://github.com/VKCOM/VKUI).
+[Документация по роутеру](https://github.com/alexz9/react-router-vkminiapps)
 
 Демо: [vk.com/app7855533](https://vk.com/app7855533)
 
-Мой VK (вопросы, предложения): [Александр Кузнецов](https://vk.me/reyzitwo)
+Мой VK (вопросы, предложения): [Александр Кузнецов](https://vk.me/id566935204)

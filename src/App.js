@@ -1,27 +1,23 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux'
-import {goBack, closeModal, setStory} from "./js/store/router/actions";
-import {getActivePanel} from "./js/services/_functions";
+import { withRouter } from 'react-router-vkminiapps';
 
 import {
   Epic, 
   View, 
-  Root, 
   Tabbar, 
   ModalRoot, 
   TabbarItem, 
   ConfigProvider,
   AdaptivityProvider, 
   AppRoot,
-  platform,
+  usePlatform,
   VKCOM,
   Cell,
   SplitCol,
   PanelHeader,
   SplitLayout,
   Panel,
-  Group
+  Group,
 } from "@vkontakte/vkui";
 
 import { 
@@ -32,194 +28,126 @@ import {
 import HomePanelBase from './js/panels/home/base';
 import HomePanelPlaceholder from './js/panels/home/placeholder';
 
-import MorePanelBase from './js/panels/more/base';
+import ProfilePanelBase from './js/panels/profile/base';
 
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
+function App(props) {
+  const setActiveView = (e) => props.router.toView(e.currentTarget.dataset.id)
 
-    this.state = {
-      hasHeader: true,
-      isDesktop: false,
-      Platform: platform()
-    }
+  let parsedUrl = new URL(window.location.href)
+  const platform = parsedUrl.searchParams.get('vk_platform') === 'desktop_web' ? VKCOM : usePlatform()
+  const isDesktop = parsedUrl.searchParams.get('vk_platform') === 'desktop_web' ? true : false
+  const hasHeader = parsedUrl.searchParams.get('vk_platform') === 'desktop_web' ? false : true
 
-    this.lastAndroidBackAction = 0;
-  }
+  const modals = (
+    <ModalRoot activeModal={props.router.modal}>
+      <HomeBotsListModal
+        id="botsList"
+        platform={platform}
+        router={props.router}
+      />
 
-  async componentDidMount() {
-    const {goBack} = this.props;
+      <HomeBotInfoModal
+        id="botInfo"
+        platform={platform}
+        router={props.router}
+      />
+    </ModalRoot>
+  );
 
-    let parsedUrl = new URL(window.location.href)
-    if (parsedUrl.searchParams.get('vk_platform') === 'desktop_web') {
-      this.setState({ 
-        isDesktop: true,
-        hasHeader: false,
-        Platform: VKCOM
-      })
-    }
-
-    window.onpopstate = () => {
-      let timeNow = +new Date();
-
-      if (timeNow - this.lastAndroidBackAction > 500) {
-        this.lastAndroidBackAction = timeNow;
-
-        goBack();
-      } else {
-        window.history.pushState(null, null);
-      }
-    };
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const {activeView, activeStory, activePanel, scrollPosition} = this.props;
-
-    if (
-      prevProps.activeView !== activeView ||
-      prevProps.activePanel !== activePanel ||
-      prevProps.activeStory !== activeStory
-    ) {
-      let pageScrollPosition = scrollPosition[activeStory + "_" + activeView + "_" + activePanel] || 0;
-
-      window.scroll(0, pageScrollPosition);
-    }
-  }
-
-  render() {
-    const {goBack, setStory, closeModal, popouts, activeView, activeStory, activeModals, panelsHistory} = this.props;
-    const { isDesktop, hasHeader, Platform } = this.state
-
-    let history = (panelsHistory[activeView] === undefined) ? [activeView] : panelsHistory[activeView];
-    let popout = (popouts[activeView] === undefined) ? null : popouts[activeView];
-    let activeModal = (activeModals[activeView] === undefined) ? null : activeModals[activeView];
-
-    const homeModals = (
-      <ModalRoot activeModal={activeModal}>
-        <HomeBotsListModal
-          id="MODAL_PAGE_BOTS_LIST"
-          onClose={() => closeModal()}
-        />
-        <HomeBotInfoModal
-          id="MODAL_PAGE_BOT_INFO"
-          onClose={() => closeModal()}
-        />
-      </ModalRoot>
-    );
-
-    return (     
-      <ConfigProvider platform={Platform} isWebView={true}>
-        <AdaptivityProvider>
-          <AppRoot>
-            <SplitLayout
-              header={hasHeader && <PanelHeader separator={false} />}
-              style={{ justifyContent: "center" }}
-            >
-              <SplitCol
-                animate={!isDesktop}
-                spaced={isDesktop}
-                width={isDesktop ? '560px' : '100%'}
-                maxWidth={isDesktop ? '560px' : '100%'}
-              >   
-                <Epic activeStory={activeStory} tabbar={ !isDesktop && 
+  return(
+    <ConfigProvider platform={platform} isWebView={true}>
+      <AdaptivityProvider>
+        <AppRoot>
+          <SplitLayout
+            header={hasHeader && <PanelHeader separator={false} />}
+            style={{ justifyContent: "center" }}
+          >
+            <SplitCol
+              animate={!isDesktop}
+              spaced={isDesktop}
+              width={isDesktop ? '560px' : '100%'}
+              maxWidth={isDesktop ? '560px' : '100%'}
+            >   
+              <Epic activeStory={props.router.activeView} tabbar={ !isDesktop && 
                 <Tabbar>
                   <TabbarItem
-                    onClick={() => setStory('home', 'base')}
-                    selected={activeStory === 'home'}
+                    data-id='home'
+                    selected={props.router.activeView === 'home'}
+                    onClick={setActiveView}
                     text='Главная'
                   ><Icon28HomeOutline/></TabbarItem>
                   <TabbarItem
-                    onClick={() => setStory('more', 'callmodal')}
-                    selected={activeStory === 'more'}
+                    data-id='profile'
+                    selected={props.router.activeView === 'profile'}
+                    onClick={setActiveView}
                     text='Профиль'
                   ><Icon28Profile/></TabbarItem>
-                </Tabbar>}>
-                  <Root id="home" activeView={activeView} popout={popout}>
-                    <View
-                      id="home"
-                      modal={homeModals}
-                      activePanel={getActivePanel("home")}
-                      history={history}
-                      onSwipeBack={() => goBack()}
+                </Tabbar>
+              }>
+                <View
+                  id="home"
+                  activePanel={props.router.activePanel}
+                  popout={props.router.popout}
+                  modal={modals}
+                  //onSwipeBack={() => goBack()}
+                >
+                  <HomePanelBase id="base" router={props.router}/>
+                  <HomePanelPlaceholder id="placeholder" router={props.router}/>
+                </View>
+
+                <View
+                  id="profile"
+                  activePanel={props.router.activePanel}
+                  popout={props.router.popout}
+                  modal={modals}
+                  //onSwipeBack={() => goBack()}
+                >
+                  <ProfilePanelBase 
+                    id="base" 
+                    isDesktop={isDesktop}
+                    router={props.router}
+                  />
+                </View>
+              </Epic>
+            </SplitCol>
+
+            {isDesktop && (
+              <SplitCol fixed width='280px' maxWidth='280px'>
+                <Panel id='menuDesktop'>
+                  {hasHeader && <PanelHeader/>}
+                  <Group>
+                    <Cell
+                      data-id='home'
+                      onClick={setActiveView}
+                      disabled={props.router.activeView === 'home'}
+                      before={<Icon28HomeOutline/>}
+                      className={props.router.activeView === 'home' ? 'activeViewCell' : ''}
                     >
-                      <HomePanelBase id="base" withoutEpic={false}/>
-                      <HomePanelPlaceholder id="placeholder"/>
-                    </View>
-                  </Root>
-                  <Root id="more" activeView={activeView} popout={popout}>
-                    <View
-                      id="more"
-                      modal={homeModals}
-                      activePanel={getActivePanel("more")}
-                      history={history}
-                      onSwipeBack={() => goBack()}
+                      Главная
+                    </Cell>
+
+                    <Cell
+                      data-id='profile'
+                      onClick={setActiveView}
+                      disabled={props.router.activeView === 'profile'}
+                      before={<Icon28Profile/>}
+                      className={props.router.activeView === 'profile' ? 'activeViewCell' : ''}
                     >
-                      <MorePanelBase id="callmodal"/>
-                    </View>
-                  </Root>
-                </Epic>
+                      Профиль
+                    </Cell>
+                  </Group>
+                </Panel>
               </SplitCol>
-
-              {isDesktop && (
-                <SplitCol fixed width='280px' maxWidth='280px'>
-                  <Panel id='menuDesktop'>
-                    {hasHeader && <PanelHeader/>}
-                    <Group>
-                      <Cell
-                        onClick={() => setStory('home', 'base')}
-                        disabled={activeStory === 'home'}
-                        before={<Icon28HomeOutline/>}
-                        style={ activeStory === 'home' ? {
-                          backgroundColor: 'var(--button_secondary_background)',
-                          borderRadius: 8
-                        } : {}}
-                      >
-                        Главная
-                      </Cell>
-                      <Cell
-                        onClick={() => setStory('more', 'callmodal')}
-                        disabled={activeStory === 'more'}
-                        before={<Icon28Profile/>}
-                        style={ activeStory === 'more' ? {
-                          backgroundColor: 'var(--button_secondary_background)',
-                          borderRadius: 8
-                        } : {}}
-                      >
-                        Профиль
-                      </Cell>
-                    </Group>
-                  </Panel>
-                </SplitCol>
-              )}
+            )}
               
-            </SplitLayout>
-          </AppRoot>
-        </AdaptivityProvider>
-      </ConfigProvider>
-    );
-  }
+          </SplitLayout>
+        </AppRoot>
+      </AdaptivityProvider>
+    </ConfigProvider>
+  )
 }
 
-const mapStateToProps = (state) => {
-  return {
-    activeView: state.router.activeView,
-    activeStory: state.router.activeStory,
-    panelsHistory: state.router.panelsHistory,
-    activeModals: state.router.activeModals,
-    popouts: state.router.popouts,
-    scrollPosition: state.router.scrollPosition,
-  };
-};
-
-
-function mapDispatchToProps(dispatch) {
-  return {
-    dispatch,
-    ...bindActionCreators({setStory, goBack, closeModal}, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(App);
