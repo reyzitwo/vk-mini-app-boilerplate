@@ -10,6 +10,7 @@ import App from './App';
 
 import '@vkontakte/vkui/dist/vkui.css';
 import './css/main.css';
+import { AdaptivityProvider } from '@vkontakte/vkui';
 import bridge from '@vkontakte/vk-bridge';
 
 bridge.subscribe((e) => {
@@ -29,7 +30,9 @@ bridge.send('VKWebAppInit', {})
 
 ReactDOM.render(
     <Router structure={structure}>
-        <App/>
+        <AdaptivityProvider>
+            <App/>
+        </AdaptivityProvider>
     </Router>,
     document.getElementById('root')
 );

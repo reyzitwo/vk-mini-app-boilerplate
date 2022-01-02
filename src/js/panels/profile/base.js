@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-    Panel,
     PanelHeader,
     Gradient,
     Avatar,
@@ -23,7 +22,7 @@ import bridge from '@vkontakte/vk-bridge';
 let isInfoUser = false
 let infoUser = ['Загрузка...']
 
-function ProfilePanelBase({id, isDesktop, router}) {
+function ProfilePanelBase({isDesktop, router}) {
     const [infoUsers, setInfoUser] = useState(infoUser)
 
     useEffect(() => {
@@ -47,7 +46,7 @@ function ProfilePanelBase({id, isDesktop, router}) {
     }
 
     return (
-        <Panel id={id}>
+        <>
             <PanelHeader separator={false}>Профиль</PanelHeader>
             <Group>
                 <Gradient className={isDesktop ? 'ProfileUserWeb' : 'ProfileUserMobail'}>
@@ -90,7 +89,7 @@ function ProfilePanelBase({id, isDesktop, router}) {
                     Добавить учебное заведение
                 </CellButton>
             </Group>
-        </Panel>
+        </>
     );
 }
 

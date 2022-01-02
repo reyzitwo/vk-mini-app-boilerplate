@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
 import {
-    Div, 
-    Panel, 
+    Div,  
     Alert, 
     Group, 
     Button, 
@@ -14,7 +13,7 @@ import {
 import { Icon16Done } from '@vkontakte/icons'
 import img from '../../../svg/chel.svg'
 
-function HomePanelBase({id, router}) {
+function HomePanelBase({router}) {
     const [showImg, setShowImg] = useState(false)
     const [snackbar, setSnackbar] = useState(null)
 
@@ -62,7 +61,7 @@ function HomePanelBase({id, router}) {
     }
 
     return (
-        <Panel id={id}>
+        <>
             <PanelHeader separator={false}>Главная</PanelHeader>
             <Group>
                 <Div>
@@ -127,7 +126,7 @@ function HomePanelBase({id, router}) {
                 }
             </Group>
             {snackbar}
-        </Panel>
+        </>
     );
 }
 
