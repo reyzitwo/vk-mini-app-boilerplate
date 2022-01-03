@@ -1,5 +1,7 @@
 import React from 'react';
 
+import ThemeControllers from './themeControllers';
+
 import {
   SplitCol,
 	Panel,
@@ -35,6 +37,8 @@ function DesktopNavigation({hasHeader, setActiveView, router}) {
             Профиль
           </Cell>
         </Group>
+
+        <ThemeControllers/>
       </Panel>
     </SplitCol>
 	)
