@@ -1,6 +1,6 @@
 import React from 'react';
-
-import ThemeControllers from './themeControllers';
+import { useSelector } from "react-redux";
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 
 import {
   SplitCol,
@@ -9,17 +9,19 @@ import {
 	Group,
 	Cell
 } from '@vkontakte/vkui';
+import ThemeControllers from './themeControllers';
 import { Icon28HomeOutline, Icon28Profile } from '@vkontakte/icons';
 
-function DesktopNavigation({hasHeader, setActiveView, router}) {
+function DesktopNavigation({ router }) {
+  const hasHeader = useSelector((state) => state.main.hasHeader)
+
 	return(
     <SplitCol fixed width='280px' maxWidth='280px'>
       <Panel id='menuDesktop'>
         {hasHeader && <PanelHeader/>}
         <Group>
           <Cell
-            data-id='home'
-            onClick={setActiveView}
+            onClick={() => router.toView('home')}
             disabled={router.activeView === 'home'}
             before={<Icon28HomeOutline/>}
             className={router.activeView === 'home' ? 'activeViewCell' : ''}
@@ -28,8 +30,7 @@ function DesktopNavigation({hasHeader, setActiveView, router}) {
           </Cell>
 
           <Cell
-            data-id='profile'
-            onClick={setActiveView}
+            onClick={() => router.toView('profile')}
             disabled={router.activeView === 'profile'}
             before={<Icon28Profile/>}
             className={router.activeView === 'profile' ? 'activeViewCell' : ''}
@@ -44,4 +45,4 @@ function DesktopNavigation({hasHeader, setActiveView, router}) {
 	)
 }
 
-export default DesktopNavigation;
+export default withRouter(DesktopNavigation);

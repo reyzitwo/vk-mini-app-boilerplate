@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 
 import {
 	Tabbar,
@@ -6,34 +7,33 @@ import {
 } from '@vkontakte/vkui';
 import { Icon28HomeOutline, Icon28Profile } from '@vkontakte/icons';
 
-function MobailNavigation({setActiveView, router}) {
+function MobailNavigation({ router }) {
 
-	function openView(e) {
+	function openView(view) {
 		let nowView = router.activeView
-		setActiveView(e)
+		router.toView(view)
 		
-		if (e.currentTarget.dataset.id === nowView) {
-		  router.toHash(`${e.currentTarget.dataset.id}/base`)
+		if (view === nowView) {
+		  router.toHash(`${view}/base`)
 		}
 	}
 
 	return(
 	    <Tabbar>
 	      <TabbarItem
-	        data-id='home'
 	        selected={router.activeView === 'home'}
-	        onClick={openView}
+	        onClick={() => openView('home')}
 	        text='Главная'
 	      ><Icon28HomeOutline/></TabbarItem>
 
 	      <TabbarItem
 	        data-id='profile'
 	        selected={router.activeView === 'profile'}
-	        onClick={openView}
+					onClick={() => openView('profile')}
 	        text='Профиль'
 	      ><Icon28Profile/></TabbarItem>
 	    </Tabbar>
 	)
 }
 
-export default MobailNavigation;
+export default withRouter(MobailNavigation);

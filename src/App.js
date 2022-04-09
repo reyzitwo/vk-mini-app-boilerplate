@@ -1,5 +1,6 @@
-import React, { lazy, Suspense } from 'react';
-import { withRouter } from 'react-router-vkminiapps';
+import React, {lazy, Suspense, useEffect} from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 
 import {
   ConfigProvider,
@@ -16,6 +17,9 @@ import {
   VKCOM,
   withAdaptivity,
 } from "@vkontakte/vkui";
+import bridge from "@vkontakte/vk-bridge";
+
+import { set } from './js/reducers/mainReducer';
 
 import DesktopNavigation from './js/components/navigation/desktop';
 import MobailNavigation from './js/components/navigation/mobail';
@@ -28,95 +32,80 @@ const HomePanelPlaceholder = lazy(() => import('./js/panels/home/placeholder'));
 const ProfilePanelBase = lazy(() => import('./js/panels/profile/base'));
 
 const App = withAdaptivity(({ viewWidth, router }) => {
-  const setActiveView = (e) => router.toView(e.currentTarget.dataset.id)
-  
-  const isDesktop = viewWidth >= 3
-  const platform = isDesktop ? VKCOM : usePlatform()
-  const hasHeader = isDesktop !== true
+  const mainStorage = useSelector((state) => state.main)
+  const dispatch = useDispatch()
+
+  dispatch(set({ key: 'isDesktop', value: viewWidth >= 3 }))
+  dispatch(set({ key: 'platform', value: mainStorage.isDesktop ? VKCOM : usePlatform() }))
+  dispatch(set({ key: 'hasHeader', value: mainStorage.isDesktop !== true }))
+
+  useEffect(() => {
+    bridge.subscribe(({ detail: { type, data } }) => {
+      if (type === 'VKWebAppUpdateConfig') {
+        dispatch(set({ key: 'theme', value: data.scheme }))
+      }
+    })
+  }, [])
 
   const modals = (
-    <ModalRoot>
-      <HomeBotsListModal
-        id="botsList"
-        platform={platform}
-        router={router}
-      />
-
-      <HomeBotInfoModal
-        id="botInfo"
-        platform={platform}
-        router={router}
-      />
+    <ModalRoot activeModal={router.modal} onClose={() => router.toBack()}>
+      <HomeBotsListModal nav="botsList"/>
+      <HomeBotInfoModal nav="botInfo"/>
     </ModalRoot>
   );
 
   return(
-    <ConfigProvider platform={platform} isWebView>
+    <ConfigProvider platform={mainStorage.platform} appearance={mainStorage.theme} isWebView>
       <AppRoot>
         <SplitLayout
-          header={hasHeader && <PanelHeader separator={false} />}
+          header={mainStorage.hasHeader && <PanelHeader separator={false} />}
           style={{ justifyContent: "center" }}
         >
           <SplitCol
-            animate={!isDesktop}
-            spaced={isDesktop}
-            width={isDesktop ? '560px' : '100%'}
-            maxWidth={isDesktop ? '560px' : '100%'}
+            animate={!mainStorage.isDesktop}
+            spaced={mainStorage.isDesktop}
+            width={mainStorage.isDesktop ? '560px' : '100%'}
+            maxWidth={mainStorage.isDesktop ? '560px' : '100%'}
           >   
             <Epic 
               activeStory={router.activeView} 
-              tabbar={!isDesktop && 
-                <MobailNavigation
-                  setActiveView={setActiveView}
-                  router={router}
-                />
-              }
+              tabbar={!mainStorage.isDesktop && <MobailNavigation/>}
             >
               <View 
                 id='home'
-                activePanel={router.activePanel}
+                activePanel={router.activePanel === 'route_modal' ? 'base' : router.activePanel}
                 popout={router.popout}
                 modal={modals}
               >
                 <Panel id='base'>
                   <Suspense fallback={<ScreenSpinner/>}>
-                    <HomePanelBase router={router}/>
+                    <HomePanelBase/>
                   </Suspense>
                 </Panel>
 
                 <Panel id='placeholder'>
                   <Suspense fallback={<ScreenSpinner/>}>
-                    <HomePanelPlaceholder router={router}/>
+                    <HomePanelPlaceholder/>
                   </Suspense>
                 </Panel>
               </View>
 
               <View 
                 id="profile"
-                activePanel={router.activePanel}
+                activePanel={router.activePanel === 'route_modal' ? 'base' : router.activePanel}
                 popout={router.popout}
                 modal={modals}
               >
                 <Panel id='base'>
                   <Suspense fallback={<ScreenSpinner/>}>
-                    <ProfilePanelBase 
-                      router={router}
-                      isDesktop={isDesktop}
-                    />
+                    <ProfilePanelBase/>
                   </Suspense>
                 </Panel>
               </View>
             </Epic>
           </SplitCol>
 
-          {isDesktop && 
-            <DesktopNavigation
-              hasHeader={hasHeader}
-              setActiveView={setActiveView}
-              router={router}
-            />
-          }
-            
+          {mainStorage.isDesktop && <DesktopNavigation/>}
         </SplitLayout>
       </AppRoot>
     </ConfigProvider>

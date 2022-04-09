@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 
 import {
     Div,  
@@ -13,7 +14,7 @@ import {
 import { Icon16Done } from '@vkontakte/icons'
 import img from '../../../svg/chel.svg'
 
-function HomePanelBase({router}) {
+function HomePanelBase({ router }) {
     const [showImg, setShowImg] = useState(false)
     const [snackbar, setSnackbar] = useState(null)
 
@@ -130,4 +131,4 @@ function HomePanelBase({router}) {
     );
 }
 
-export default HomePanelBase;
+export default withRouter(HomePanelBase);

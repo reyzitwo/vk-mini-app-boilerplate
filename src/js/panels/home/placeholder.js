@@ -1,4 +1,5 @@
 import React from 'react';
+import { withRouter } from "@reyzitwo/react-router-vkminiapps";
 
 import {
     PanelHeader, 
@@ -8,7 +9,7 @@ import {
 } from "@vkontakte/vkui";
 import { Icon56DiamondOutline } from '@vkontakte/icons';
 
-function HomePanelPlaceholder({router}) {
+function HomePanelPlaceholder({ router }) {
     
     return(
         <>
@@ -31,4 +32,4 @@ function HomePanelPlaceholder({router}) {
     )
 }
 
-export default HomePanelPlaceholder;
+export default withRouter(HomePanelPlaceholder);

@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { useSelector } from "react-redux";
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 import {
     Cell, 
     List, 
@@ -7,16 +8,17 @@ import {
     InfoRow, 
     ModalPage, 
     ModalPageHeader, 
-    PanelHeaderButton, 
-    withPlatform, 
+    PanelHeaderButton,
     IOS
 } from "@vkontakte/vkui";
 import { Icon24Dismiss, Icon24Cancel } from '@vkontakte/icons'
 
-function BotsListModal({id, platform, router}) {
+function BotsListModal({ nav, router }) {
+    const platform = useSelector((state) => state.main.platform)
+
     return (
         <ModalPage
-            id={id}
+            nav={nav}
             header={
                 <ModalPageHeader
                     left={platform !== IOS && 
@@ -67,4 +69,4 @@ function BotsListModal({id, platform, router}) {
     );
 }
 
-export default withPlatform(BotsListModal);
+export default withRouter(BotsListModal);

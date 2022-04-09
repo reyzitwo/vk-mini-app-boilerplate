@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 
 import {
     PanelHeader,
@@ -18,30 +20,28 @@ import {
     Icon28AddOutline
 } from '@vkontakte/icons';
 import bridge from '@vkontakte/vk-bridge';
+import { set } from "../../reducers/mainReducer";
 
 let isInfoUser = false
-let infoUser = ['Загрузка...']
 
-function ProfilePanelBase({isDesktop, router}) {
-    const [infoUsers, setInfoUser] = useState(infoUser)
+function ProfilePanelBase({ router }) {
+    const mainStorage = useSelector((state) => state.main)
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (!isInfoUser) {
             getInfoUser()
         }
-    })
+    }, [])
 
     async function getInfoUser() {
         router.toPopout(<ScreenSpinner/>)
 
         let user_info = await bridge.send('VKWebAppGetUserInfo');
-        infoUser[0] = user_info.first_name + ' ' + user_info.last_name
-        infoUser.push(user_info.photo_200)
-        infoUser.push(user_info.id)
+        user_info.name = user_info.first_name + ' ' + user_info.last_name
+        dispatch(set({ key: 'infoUser', value: user_info }))
 
-        setInfoUser(infoUser)
         isInfoUser = true
-
         router.toPopout()
     }
 
@@ -49,15 +49,15 @@ function ProfilePanelBase({isDesktop, router}) {
         <>
             <PanelHeader separator={false}>Профиль</PanelHeader>
             <Group>
-                <Gradient className={isDesktop ? 'ProfileUserWeb' : 'ProfileUserMobail'}>
-                    <Avatar size={96} src={infoUsers[1]}/>
+                <Gradient className={mainStorage.isDesktop ? 'ProfileUserWeb' : 'ProfileUserMobail'}>
+                    <Avatar size={96} src={mainStorage.infoUser.photo_200}/>
 
                     <Title 
                         className='NameUser'
                         level="2" 
                         weight="medium"
                     >
-                        {infoUsers[0]}
+                        {mainStorage.infoUser.name}
                     </Title>
 
                     <Text className='SubheaderUser'>
@@ -67,7 +67,7 @@ function ProfilePanelBase({isDesktop, router}) {
                     <Button 
                         size="m" 
                         mode="secondary" 
-                        href={`https://vk.com/id${infoUsers[2]}`} 
+                        href={`https://vk.com/id${mainStorage.infoUser.id}`}
                         target='_blank' 
                     >
                         Перейти на страницу
@@ -93,4 +93,4 @@ function ProfilePanelBase({isDesktop, router}) {
     );
 }
 
-export default ProfilePanelBase;
+export default withRouter(ProfilePanelBase);
