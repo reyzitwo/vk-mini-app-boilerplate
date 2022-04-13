@@ -42,7 +42,7 @@ const App = withAdaptivity(({ viewWidth, router }) => {
   useEffect(() => {
     bridge.subscribe(({ detail: { type, data } }) => {
       if (type === 'VKWebAppUpdateConfig') {
-        dispatch(set({ key: 'theme', value: data.scheme }))
+        dispatch(set({ key: 'theme', value: data.scheme === 'space_gray' ? 'dark' : 'light' }))
       }
     })
   }, [])
