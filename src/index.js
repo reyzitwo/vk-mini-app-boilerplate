@@ -22,7 +22,7 @@ ReactDOM.render(
         <AdaptivityProvider>
             <Router structure={structure}>
                 <App/>
-            </Router>,
+            </Router>
         </AdaptivityProvider>
     </Provider>,
     document.getElementById('root')
